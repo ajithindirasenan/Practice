@@ -1,0 +1,99 @@
+package main
+
+import "fmt"
+
+// initiate Minheap.
+type MinHeap struct {
+	items []int
+}
+
+// Getting the length of the Heap.
+func (m *MinHeap) len() int {
+	return len(m.items)
+}
+
+// Creating the NewMinHeap from Struct.
+func newMinHeap() *MinHeap {
+	return &MinHeap{items: []int{}}
+}
+
+// Inserting the valu the MinHeap.
+func (m *MinHeap) insert(val int) {
+	m.items = append(m.items, val)
+	m.heapifyUp(m.len() - 1)
+}
+
+// Extracting and Deleting the Root MinHeap.
+func (m *MinHeap) extractMin() int {
+	if m.len() == 0 {
+		panic("the heap is empty")
+	}
+	min := m.items[0]
+	lastIndex := m.len() - 1
+	m.items[0] = m.items[lastIndex]
+	m.items = m.items[:lastIndex]
+	m.heapifyDown(0)
+	return min
+}
+
+// Heapify Up the Heap datastructure after the data got inserted to maintain the heap property.
+func (m *MinHeap) heapifyUp(i int) {
+	for i > 0 {
+		parent := (i - 1) / 2
+		if m.items[i] >= m.items[parent] {
+			break
+		}
+		m.items[i], m.items[parent] = m.items[parent], m.items[i]
+		i = parent
+	}
+}
+
+// Heapify Down the Heap Datastructure after the root value extracted.
+func (m *MinHeap) heapifyDown(i int) {
+	lastIndex := m.len() - 1
+	for {
+		left := 2*i + 1
+		right := 2*i + 2
+		smallest := i
+
+		if left <= lastIndex && m.items[left] < m.items[smallest] {
+			smallest = left
+		}
+		if right <= lastIndex && m.items[right] < m.items[smallest] {
+			smallest = right
+		}
+		if smallest == i {
+			break
+		}
+		m.items[i], m.items[smallest] = m.items[smallest], m.items[i]
+		i = smallest
+	}
+}
+
+// Peek only returns the root value of the heap and dont delete it.
+func (m *MinHeap) peek() int {
+	if m.len() == 0 {
+		panic("the heap is empty")
+	}
+	return m.items[0]
+}
+
+func main() {
+	mh := newMinHeap()
+
+	mh.insert(50)
+	mh.insert(60)
+	mh.insert(30)
+	mh.insert(80)
+	mh.insert(20)
+	mh.insert(40)
+	mh.insert(10)
+	fmt.Println(mh.items)
+	fmt.Println("just peek : ", mh.peek())
+	for mh.len() > 0 {
+		fmt.Println(mh.extractMin())
+	}
+
+	fmt.Println(mh.items)
+
+}
